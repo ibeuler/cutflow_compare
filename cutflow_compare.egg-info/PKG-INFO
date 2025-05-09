@@ -26,7 +26,6 @@ Requires-Python: >=3.6
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: pandas>=1.0
-Requires-Dist: ROOT>=6.24
 Dynamic: author
 Dynamic: home-page
 Dynamic: license-file
