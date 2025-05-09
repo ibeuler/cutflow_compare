@@ -33,21 +33,30 @@ python cutflow_compare.py --files histoOut-compared.root histoOut-reference.root
 Make sure the same regions are present in both files with the same name.
 
 ### Arguments
-- `--files`: List of input ROOT files to compare.
-- `--regions`: List of regions to compare within the cutflow histograms.
+- `--files`: List of input ROOT files to compare. Required.
+- `--regions`: List of regions to compare within the cutflow histograms. Required.
+- `--separate-selections`: Optional flag to keep selections separate instead of merging them.
+- `--relative-error`: Optional flag to include relative error calculations in the output.
+
+### Output
+The tool generates a CSV file named `cutflow_comparison_result.csv` containing the comparison results. If the `--relative-error` flag is used, the CSV will also include relative error calculations for each region.
 
 ## Example
 ```bash
-cutflow_compare --files histoOut-compared.root histoOut-reference.root -r WZ
+cutflow_compare --files histoOut-compared.root histoOut-reference.root -r region1 region2 region3 --relative-error
 ```
 
-This command will compare the specified regions in the two provided ROOT files and output the results to `cutflow_comparison_result.csv`.
+This command compares the specified regions (`region1`, `region2`, `region3`) in the two provided ROOT files (`histoOut-compared.root` and `histoOut-reference.root`). It outputs the results to `cutflow_comparison_result.csv`, including relative error calculations.
 
+This command will compare the specified regions in the two provided ROOT files and output the results to `cutflow_comparison_result.csv`.
 ## Requirements
 
 - Python 3.6+
 - [ROOT](https://root.cern/) (must be installed separately, e.g., via conda: `conda install -c conda-forge root`)
-- pandas
+- pandas (install via pip: `pip install pandas`)
+- uncertainties (install via pip: `pip install uncertainties`)
+
+Make sure all dependencies are installed before running the tool.
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
