@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: cutflow_compare
-Version: 0.1.3
+Version: 0.1.4
 Summary: A package to compare cutflow histograms from ROOT files.
 Home-page: https://github.com/ibeuler/cutflow_compare
 Author: Ibrahim H.I. ABUSHAWISH
@@ -49,14 +49,21 @@ pip install cutflow_compare
 ```
 
 ## Usage
-To compare cutflow histograms, run the following command:
+
+After installation, you can use the command-line tool directly:
+
+```
+cutflow_compare --files histoOut-compared.root histoOut-reference.root -r region1 region2 region3
+```
+
+Or, if running from source:
 
 ```
 python cutflow_compare.py --files histoOut-compared.root histoOut-reference.root -r region1 region2 region3
 ```
 
 ### Note: 
-Make sure the same regions are present in both file with thesame name.
+Make sure the same regions are present in both files with the same name.
 
 ### Arguments
 - `--files`: List of input ROOT files to compare.
@@ -64,10 +71,16 @@ Make sure the same regions are present in both file with thesame name.
 
 ## Example
 ```bash
-python cutflow_compare.py --files histoOut-compared.root histoOut-reference.root -r WZ
+cutflow_compare --files histoOut-compared.root histoOut-reference.root -r WZ
 ```
 
 This command will compare the specified regions in the two provided ROOT files and output the results to `cutflow_comparison_result.csv`.
+
+## Requirements
+
+- Python 3.6+
+- [ROOT](https://root.cern/) (must be installed separately, e.g., via conda: `conda install -c conda-forge root`)
+- pandas
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
@@ -76,4 +89,4 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 Contributions are welcome! Please feel free to submit a pull request or open an issue for any enhancements or bug fixes.
 
 ## Acknowledgments
-This package utilizes the ROOT framework for data analysis and visualization.# cutflow_compare
+This package utilizes the ROOT framework for data analysis and visualization.
