@@ -22,13 +22,16 @@ To compare cutflow histograms, run the following command:
 python cutflow_compare.py --files histoOut-compared.root histoOut-reference.root -r region1 region2 region3
 ```
 
+### Note: 
+Make sure the same regions are present in both file with thesame name.
+
 ### Arguments
 - `--files`: List of input ROOT files to compare.
 - `--regions`: List of regions to compare within the cutflow histograms.
 
 ## Example
 ```bash
-python cutflow_compare.py --files histoOut-compared.root histoOut-reference.root -r region1 region2
+python cutflow_compare.py --files histoOut-compared.root histoOut-reference.root -r WZ
 ```
 
 This command will compare the specified regions in the two provided ROOT files and output the results to `cutflow_comparison_result.csv`.
