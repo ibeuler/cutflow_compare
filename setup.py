@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='cutflow_compare',
-    version='0.1.2',
+    version='0.1.3',
     author='Ibrahim H.I. ABUSHAWISH',
     author_email='ibrahim.hamed2701@gmail.com',
     description='A package to compare cutflow histograms from ROOT files.',
@@ -20,8 +20,8 @@ setup(
         'pandas>=1.0',
     ],
     entry_points={
-        'console_scripts': [
-            'cutflow_compare=cutflow_compare.cutflow_compare:main',
-        ],
+    'console_scripts': [
+        'cutflow_compare=cutflow_compare.cutflow_compare:main',
+    ],
     },
 )

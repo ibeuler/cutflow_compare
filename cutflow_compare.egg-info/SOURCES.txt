@@ -7,5 +7,6 @@ cutflow_compare/cutflow_compare.py
 cutflow_compare.egg-info/PKG-INFO
 cutflow_compare.egg-info/SOURCES.txt
 cutflow_compare.egg-info/dependency_links.txt
+cutflow_compare.egg-info/entry_points.txt
 cutflow_compare.egg-info/requires.txt
 cutflow_compare.egg-info/top_level.txt

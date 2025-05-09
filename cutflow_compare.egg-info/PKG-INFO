@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: cutflow_compare
-Version: 0.1.1
+Version: 0.1.3
 Summary: A package to compare cutflow histograms from ROOT files.
 Home-page: https://github.com/ibeuler/cutflow_compare
 Author: Ibrahim H.I. ABUSHAWISH
