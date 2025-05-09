@@ -54,8 +54,7 @@ def main():
             for i in range(1, nbins):
                 labels.append(hc.GetXaxis().GetBinLabel(i+1))
                 contents.append(ufloat(hc.GetBinContent(i+1), hc.GetBinError(i+1)))
-                contents_errored.append(f"{hc.GetBinContent(i+1)} ±{hc.GetBinError(i+1)}")
-            
+                contents_errored.append(f"{hc.GetBinContent(i+1)} ±{format(hc.GetBinError(i+1),'.2f')}")
 
             if args.separate_selections:
                 df[f"{file_name}_{region}_Selection"] = labels
@@ -66,9 +65,7 @@ def main():
             print(f"*** Finished analysis for file: {file} ***")
 
     if args.relative_error:
-        print(cont_dict)
         error_df = pd.DataFrame.from_dict(cont_dict)
-        print(error_df)
         for region in regions:
             
             print(f"*** error calculation: {region} ***")
