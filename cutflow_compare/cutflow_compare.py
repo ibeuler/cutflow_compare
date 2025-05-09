@@ -4,6 +4,7 @@ import pandas as pd
 
 """
 Usage: python cutflow_compare.py --file histoOut-compared.root histoOut-referance.root -r region1 region2 region3
+Make sure you use the same names for regions in both .root files.
 """
 def get_file_name(file):
     file_name = file.replace("histoOut-", "")
@@ -24,10 +25,18 @@ def main():
     for file in files:
         f = ROOT.TFile(file)
         file_name = get_file_name(file)
-        
+        if not f.IsOpen():
+            print(f"Error: File {file} could not be opened.")
+            raise SystemExit(1)
+
         print(f"*** Starting analysis for file: {file} ***")
 
         for region in regions:
+
+            if not f.Get(region + "/" + "cutflow"):
+                print(f"Error: No cutflow histogram found in file {file}.")
+                raise SystemExit(1)
+            
             hc = f.Get(region + "/" + "cutflow")
             nbins = hc.GetXaxis().GetNbins()
 
