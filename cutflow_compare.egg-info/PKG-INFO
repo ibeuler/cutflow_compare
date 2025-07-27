@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: cutflow_compare
-Version: 0.1.6
+Version: 2.0.2
 Summary: A package to compare cutflow histograms from ROOT files.
 Home-page: https://github.com/ibeuler/cutflow_compare
 Author: Ibrahim H.I. ABUSHAWISH
@@ -39,13 +39,15 @@ Dynamic: requires-python
 
 ## Features
 - Compare cutflow histograms from multiple ROOT files.
-- Generate a CSV report of the comparison results.
+- Custom labels for each file using the `--labels` argument.
+- Generate separate CSV reports for each region.
+- Calculate relative errors and standard deviations across all files for each selection.
 - Easy to use with command-line arguments for file input and region selection.
 
 ## Installation
 You can install the package using pip:
 
-```
+```sh
 pip install cutflow_compare
 ```
 
@@ -53,44 +55,47 @@ pip install cutflow_compare
 
 After installation, you can use the command-line tool directly:
 
-```
-cutflow_compare --files histoOut-compared.root histoOut-reference.root -r region1 region2 region3
+```sh
+cutflow_compare --files histoOut-compared.root histoOut-reference.root -r region1 region2 region3 --labels Compared Reference
 ```
 
 Or, if running from source:
 
-```
-python cutflow_compare.py --files histoOut-compared.root histoOut-reference.root -r region1 region2 region3
+```sh
+python cutflow_compare.py --files histoOut-compared.root histoOut-reference.root -r region1 region2 region3 --labels Compared Reference
 ```
 
 ### Note: 
-Make sure the same regions are present in both files with the same name.
+Make sure the same regions are present in all files with the same name.
 
 ### Arguments
 - `--files`: List of input ROOT files to compare. Required.
 - `--regions`: List of regions to compare within the cutflow histograms. Required.
+- `--labels`: Custom labels for each file, used in the output CSV. Optional.
 - `--separate-selections`: Optional flag to keep selections separate instead of merging them.
 - `--relative-error`: Optional flag to include relative error calculations in the output.
 
 ### Output
-The tool generates a CSV file named `cutflow_comparison_result.csv` containing the comparison results. If the `--relative-error` flag is used, the CSV will also include relative error calculations for each region.
+The tool generates **separate CSV files for each region** named `cutflow_comparison_{region}.csv`.  
+Each CSV contains the comparison results for that specific region, with columns for each file and calculated relative errors when multiple files are compared.
 
 ## Example
 ```bash
-cutflow_compare --files histoOut-compared.root histoOut-reference.root -r region1 region2 region3 --relative-error
+cutflow_compare --files histoOut-compared.root histoOut-reference.root histoOut-third.root -r WZ ttbar --labels Compared Reference Third --relative-error
 ```
 
-This command compares the specified regions (`region1`, `region2`, `region3`) in the two provided ROOT files (`histoOut-compared.root` and `histoOut-reference.root`). It outputs the results to `cutflow_comparison_result.csv`, including relative error calculations.
+This command compares the specified regions (`WZ`, `ttbar`) in the three provided ROOT files. It outputs separate results to:
+- `cutflow_comparison_WZ.csv`
+- `cutflow_comparison_ttbar.csv`
 
-This command will compare the specified regions in the two provided ROOT files and output the results to `cutflow_comparison_result.csv`.
+Each file includes relative error and standard deviation calculations for each selection.
+
 ## Requirements
 
 - Python 3.6+
 - [ROOT](https://root.cern/) (must be installed separately, e.g., via conda: `conda install -c conda-forge root`)
-- pandas (install via pip: `pip install pandas`)
-- uncertainties (install via pip: `pip install uncertainties`)
-
-Make sure all dependencies are installed before running the tool.
+- pandas (automatically installed with the package)
+- uncertainties (automatically installed with the package)
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.

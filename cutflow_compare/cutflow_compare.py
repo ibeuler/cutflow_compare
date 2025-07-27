@@ -32,27 +32,29 @@ def main():
         print("Error: Number of labels must match number of files.")
         raise SystemExit(1)
     
-    df = pd.DataFrame()
-    cont_dict = {}
-    for file, label in zip(files, labels):
-        f = ROOT.TFile(file)
-        file_name = get_file_name(file)
-        if not f.IsOpen():
-            print(f"Error: File {file} could not be opened.")
-            raise SystemExit(1)
-
-        print(f"*** Starting analysis for file: {file} ***")
+    # Process each region separately
+    for region in regions:
+        df = pd.DataFrame()
+        cont_dict = {}
         
-        for region in regions:
+        print(f"\n*** Processing region: {region} ***")
+        
+        for file, label in zip(files, labels):
+            f = ROOT.TFile(file)
+            if not f.IsOpen():
+                print(f"Error: File {file} could not be opened.")
+                raise SystemExit(1)
+
+            print(f"*** Starting analysis for file: {file}, region: {region} ***")
 
             if not f.Get(region + "/" + "cutflow"):
-                print(f"Error: No cutflow histogram found in file {file}.")
-                raise SystemExit(1)
+                print(f"Error: No cutflow histogram found in file {file} for region {region}.")
+                f.Close()
+                continue
             
             hc = f.Get(region + "/" + "cutflow")
             nbins = hc.GetXaxis().GetNbins()
 
-            nctot = hc.GetBinContent(0+1)
             labels_list = []
             contents = []
             contents_errored = []
@@ -62,34 +64,35 @@ def main():
                 contents_errored.append(f"{hc.GetBinContent(i+1)} ±{format(hc.GetBinError(i+1),'.2f')}")
 
             if args.separate_selections:
-                df[f"{label}_{region}_Selection"] = labels_list
+                df[f"{label}_Selection"] = labels_list
             else: 
                 df["Selection"] = labels_list
-            df[f"{label}_{region}_Event_After_Cut"] = contents_errored
-            cont_dict[f"{label}_{region}_Event_After_Cut_ufloat"] = contents
-            print(f"*** Finished analysis for file: {file} ***")
+            df[f"{label}_Event_After_Cut"] = contents_errored
+            cont_dict[f"{label}_Event_After_Cut_ufloat"] = contents
+            f.Close()
 
-    if args.relative_error:
-        error_df = pd.DataFrame.from_dict(cont_dict)
-        for region in regions:
-            print(f"*** error calculation: {region} ***")
+        if args.relative_error and len(cont_dict) > 1:
+            print(f"*** Calculating relative error for region: {region} ***")
+            error_df = pd.DataFrame.from_dict(cont_dict)
             # Collect all columns for this region
-            cols = [f"{label}_{region}_Event_After_Cut_ufloat" for label in labels]
+            cols = [f"{label}_Event_After_Cut_ufloat" for label in labels]
             # Get the nominal values for each file/selection
             values = error_df[cols].apply(lambda row: [x.n for x in row], axis=1)
             # Calculate mean and std for each selection
             means = values.apply(lambda x: sum(x)/len(x))
             stds = values.apply(lambda x: pd.Series(x).std())
-            # Relative error: std/mean-
+            # Relative error: std/mean
             rel_error = stds / means
             df[f"{region}_RelativeError_AllFiles"] = rel_error
-            print(f"*** Finished error calculation: {region} ***")
 
-    df.to_csv("cutflow_comparison_result.csv", index=False)
-                
-    print("\n" + "*" * 63)
-    print("***Comparison results saved to cutflow_comparison_result.csv***")
-    print("*" * 63 + "\n")
+        # Save each region to a separate CSV file
+        output_filename = f"cutflow_comparison_{region}.csv"
+        df.to_csv(output_filename, index=False)
+        print(f"*** Results for region {region} saved to {output_filename} ***")
+
+    print("\n" + "*" * 50)
+    print("*** All comparison results saved successfully! ***")
+    print("*" * 50 + "\n")
 
 if __name__ == "__main__":
     main()
