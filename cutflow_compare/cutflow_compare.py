@@ -113,23 +113,23 @@ def main():
             else:
                 table.add_row(row.tolist())
         print(table)
-    if args.save:
-        # Determine filename
-        if isinstance(args.save, str):
-            # Custom filename prefix provided
-            output_filename = f"{args.save}_{region}.csv"
-        else:
-            # Default filename
-            output_filename = f"cutflow_comparison_{region}.csv"
+        if args.save:
+            # Determine filename
+            if isinstance(args.save, str):
+                # Custom filename prefix provided
+                output_filename = f"{args.save}_{region}.csv"
+            else:
+                # Default filename
+                output_filename = f"cutflow_comparison_{region}.csv"
         
-        df.to_csv(output_filename, index=False)
-        print(f"*** Results for region {region} saved to \033[92m{output_filename}\033[0m ***")
-        print("\n" + "*" * 50)
-        print("*** All comparison results saved successfully! ***")
-        print("*" * 50 + "\n")
-    else:
-        print("\033[91m The Table is not saved!")
-        print("\033[0m*** To save the table, use \033[92m--save\033[0m option. Optionally, add a custom filename: \033[92m--save my_filename\033[0m ***\033[0m")
-    
+            df.to_csv(output_filename, index=False)
+            print(f"*** Results for region {region} saved to \033[92m{output_filename}\033[0m ***")
+            print("\n" + "*" * 50)
+            print("*** All comparison results saved successfully! ***")
+            print("*" * 50 + "\n")
+        else:
+            print("\033[91m The Table is not saved!")
+            print("\033[0m*** To save the table, use \033[92m--save\033[0m option. Optionally, add a custom filename: \033[92m--save my_filename\033[0m ***\033[0m")
+        
 if __name__ == "__main__":
     main()

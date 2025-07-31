@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: cutflow_compare
-Version: 2.0.4
+Version: 2.0.5
 Summary: A Python package to compare cutflow histograms from ROOT files.
 Home-page: https://github.com/ibeuler/cutflow_compare
 Author: Ibrahim H.I. ABUSHAWISH
