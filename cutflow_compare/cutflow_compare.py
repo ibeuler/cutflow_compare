@@ -74,7 +74,7 @@ def main():
             if args.separate_selections:
                 df[f"{label}_Selection"] = labels_list
             else: 
-                df["Selection"] = labels_list
+                df[f"Selection in region {region}"] = labels_list
             df[f"{label}_Event_After_Cut"] = contents_errored
             cont_dict[f"{label}_Event_After_Cut_ufloat"] = contents
             f.Close()
@@ -94,29 +94,25 @@ def main():
             df[f"{region}_RelativeError_AllFiles"] = rel_error
 
             # Print results (default behavior)
-    print(f"\n*** Results for region: {region} ***")
-    table = pt.PrettyTable()
-    table.field_names = df.columns.tolist()
-    
-    for _, row in df.iterrows():
-        if args.colored:
-            colored_row = []
-            for i, cell in enumerate(row.tolist()):
-                # Color each file's data with different colors
-                if i == 0:  # Selection column stays uncolored
-                    colored_row.append(str(cell))
-                else:
-                    # Determine which file this column belongs to
-                    file_index = (i - 1) % len(labels)
-                    colored_row.append(f"{colors[file_index % len(colors)]}{cell}{reset}")
-            table.add_row(colored_row)
-        else:
-            table.add_row(row.tolist())
-    
-    print(table)
-    if not args.save :
-        print("\033[91m The Table is not saved!")
-        print("\033[0m***To save the table, use \033[92m--save\033[0m option. Optionally, add a custom filename: \033[92m--save my_filename\033[0m ***\033[0m")
+        print(f"\n*** Results for region: {region} ***")
+        table = pt.PrettyTable()
+        table.field_names = df.columns.tolist()
+        
+        for _, row in df.iterrows():
+            if args.colored:
+                colored_row = []
+                for i, cell in enumerate(row.tolist()):
+                    # Color each file's data with different colors
+                    if i == 0:  # Selection column stays uncolored
+                        colored_row.append(str(cell))
+                    else:
+                        # Determine which file this column belongs to
+                        file_index = (i - 1) % len(labels)
+                        colored_row.append(f"{colors[file_index % len(colors)]}{cell}{reset}")
+                table.add_row(colored_row)
+            else:
+                table.add_row(row.tolist())
+        print(table)
     if args.save:
         # Determine filename
         if isinstance(args.save, str):
@@ -127,12 +123,13 @@ def main():
             output_filename = f"cutflow_comparison_{region}.csv"
         
         df.to_csv(output_filename, index=False)
-        print(f"*** Results for region {region} saved to {output_filename} ***")
-
-    if args.save:
+        print(f"*** Results for region {region} saved to \033[92m{output_filename}\033[0m ***")
         print("\n" + "*" * 50)
         print("*** All comparison results saved successfully! ***")
         print("*" * 50 + "\n")
-
+    else:
+        print("\033[91m The Table is not saved!")
+        print("\033[0m*** To save the table, use \033[92m--save\033[0m option. Optionally, add a custom filename: \033[92m--save my_filename\033[0m ***\033[0m")
+    
 if __name__ == "__main__":
     main()
