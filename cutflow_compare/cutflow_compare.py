@@ -2,9 +2,10 @@ import ROOT
 import argparse
 import pandas as pd
 from uncertainties import ufloat
+import prettytable as pt
 
 """
-Usage: cutflow_compare --files histoOut-compared.root histoOut-reference.root -r region1 region2 region3 --labels Compared Reference --separate-selections --relative-error
+Usage: cutflow_compare --files histoOut-compared.root histoOut-reference.root -r region1 region2 region3 --labels Compared Reference --separate-selections --relative-error --save my_results --colored
 Make sure you use the same names for regions in both .root files.
 """
 def get_file_name(file):
@@ -21,7 +22,14 @@ def main():
     parser.add_argument('--labels', nargs='+', required=False, help='Labels for input files')
     parser.add_argument('--separate-selections', action='store_true', help='Keep selections separate instead of merging')
     parser.add_argument('--relative-error', action='store_true', help='Include error in the output')
+    parser.add_argument('--save', nargs='?', const=True, help='Save the results to CSV files. Optionally specify a custom filename prefix.')
+    parser.add_argument('--colored', action='store_true', help='Display table with colored columns for better contrast')
+    
     args = parser.parse_args()    
+
+    # Color codes for different files
+    colors = ['\033[92m', '\033[94m', '\033[95m', '\033[96m', '\033[93m']  # Green, Blue, Magenta, Cyan, Yellow
+    reset = '\033[0m'
 
     # Parse the input arguments
     files = args.files
@@ -85,14 +93,46 @@ def main():
             rel_error = stds / means
             df[f"{region}_RelativeError_AllFiles"] = rel_error
 
-        # Save each region to a separate CSV file
-        output_filename = f"cutflow_comparison_{region}.csv"
+            # Print results (default behavior)
+    print(f"\n*** Results for region: {region} ***")
+    table = pt.PrettyTable()
+    table.field_names = df.columns.tolist()
+    
+    for _, row in df.iterrows():
+        if args.colored:
+            colored_row = []
+            for i, cell in enumerate(row.tolist()):
+                # Color each file's data with different colors
+                if i == 0:  # Selection column stays uncolored
+                    colored_row.append(str(cell))
+                else:
+                    # Determine which file this column belongs to
+                    file_index = (i - 1) % len(labels)
+                    colored_row.append(f"{colors[file_index % len(colors)]}{cell}{reset}")
+            table.add_row(colored_row)
+        else:
+            table.add_row(row.tolist())
+    
+    print(table)
+    if not args.save :
+        print("\033[91m The Table is not saved!")
+        print("\033[0m***To save the table, use \033[92m--save\033[0m option. Optionally, add a custom filename: \033[92m--save my_filename\033[0m ***\033[0m")
+    if args.save:
+        # Determine filename
+        if isinstance(args.save, str):
+            # Custom filename prefix provided
+            output_filename = f"{args.save}_{region}.csv"
+        else:
+            # Default filename
+            output_filename = f"cutflow_comparison_{region}.csv"
+        
         df.to_csv(output_filename, index=False)
         print(f"*** Results for region {region} saved to {output_filename} ***")
 
-    print("\n" + "*" * 50)
-    print("*** All comparison results saved successfully! ***")
-    print("*" * 50 + "\n")
+    if args.save:
+        print("\n" + "*" * 50)
+        print("*** All comparison results saved successfully! ***")
+        print("*" * 50 + "\n")
 
 if __name__ == "__main__":
     main()
