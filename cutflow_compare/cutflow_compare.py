@@ -181,6 +181,42 @@ def compare_with_countflow(args, regions, labels, colors, reset):
                 if not hp:
                     print(f"Warning: No countflow histogram '{countflow_name}' found in file {file} for region {region}.")
                     continue
+
+                # Check if the number of bins mismatches
+                if hc.GetNbinsX() != hp.GetNbinsX():
+                    print(f"Error: Number of bins in cutflow ({hc.GetNbinsX()}) does not match countflow ({hp.GetNbinsX()}) for region {region}.")
+                    # print the bins:
+                    print("Cutflow bin labels:")
+                    for i in range(1, hc.GetNbinsX() + 1):
+                        print(f"  {i}: {hc.GetXaxis().GetBinLabel(i)}")
+                    print("Countflow bin labels:")
+                    for i in range(1, hp.GetNbinsX() + 1):
+                        print(f"  {i}: {hp.GetXaxis().GetBinLabel(i)}")
+                    # Align selections: add None for missing bins
+                    cutflow_labels = [hc.GetXaxis().GetBinLabel(i) for i in range(1, hc.GetNbinsX() + 1)]
+                    countflow_labels = [hp.GetXaxis().GetBinLabel(i) for i in range(1, hp.GetNbinsX() + 1)]
+                    all_labels = list((cutflow_labels + countflow_labels))
+                    cutflow_contents_aligned = []
+                    countflow_contents_aligned = []
+                    for label in all_labels:
+                        if label in cutflow_labels:
+                            idx = cutflow_labels.index(label) + 1
+                            cutflow_contents_aligned.append(f"{hc.GetBinContent(idx)} ±{format(hc.GetBinError(idx),'.2f')}")
+                        else:
+                            cutflow_contents_aligned.append(None)
+                        if label in countflow_labels:
+                            idx = countflow_labels.index(label) + 1
+                            countflow_contents_aligned.append(f"{hp.GetBinContent(idx)} ±{format(hp.GetBinError(idx),'.2f')}")
+                        else:
+                            countflow_contents_aligned.append(None)
+                    # Print aligned table vertically
+                    print("\nAligned selections (vertical):")
+                    aligned_table = pt.PrettyTable()
+                    aligned_table.field_names = ["Selection", "Cutflow", f"{countflow_name}_Countflow"]
+                    for i, label in enumerate(all_labels):
+                        aligned_table.add_row([label, cutflow_contents_aligned[i], countflow_contents_aligned[i]])
+                    print(aligned_table)
+                    continue
                 
                 countflow_labels, countflow_contents, countflow_contents_errored = extract_histogram_data(hp, region)
                 
