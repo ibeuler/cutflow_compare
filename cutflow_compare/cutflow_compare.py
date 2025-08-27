@@ -168,7 +168,16 @@ def compare_with_countflow(args, regions, labels, colors, reset):
                 raise ValueError(f"No cutflow histogram found in file {file} for region {region}.")
             
             cutflow_labels, cutflow_contents, cutflow_contents_errored = extract_histogram_data(hc, region)
-            
+
+            # Pop the first item only if in --counts mode
+            if args.counts:
+                if cutflow_labels:
+                    cutflow_labels.pop(0)
+                if cutflow_contents:
+                    cutflow_contents.pop(0)
+                if cutflow_contents_errored:
+                    cutflow_contents_errored.pop(0)
+
             if args.separate_selections:
                 df[f"Selection"] = cutflow_labels
             else:
