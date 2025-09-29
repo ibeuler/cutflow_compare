@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 setup(
     name='cutflow_compare',
-    version='2.1.0',  # Update this version as needed
+    version='2.3.0',  # Updated version after adding region mapping, list-regions, mismatch handling
     author='Ibrahim H.I. ABUSHAWISH',
     author_email='ibrahim.hamed2701@gmail.com',
-    description='A Python package to compare cutflow histograms from ROOT files.',
+    description='Compare cutflow (and countflow) histograms from ROOT files, including per-file region name mapping.',
     long_description=open('README.md', encoding='utf-8').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/ibeuler/cutflow_compare',
